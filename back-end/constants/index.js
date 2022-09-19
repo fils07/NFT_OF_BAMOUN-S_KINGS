@@ -1,5 +1,4 @@
 const WHITELIST_CONTRACT_ADDRRESS="0x09e0DBB720811a3B2Cebf39d228aB94e9c033aFF"
-const METADATA_URL="../my-app/src/api/"
-const NFT_CONTRACT_ADDRESS= "0x22751853278a6F678Ade2f2d7CC151D25e68ECdc"
+const METADATA_URL="https://nft-of-bamoun-s-kings-git-main-fils07.vercel.app/nft-collection/api/"
 
 module.exports={WHITELIST_CONTRACT_ADDRRESS,METADATA_URL}

@@ -50,6 +50,26 @@ const PriceContainer = styled.span`
   text-align:center;
   `
 
+const isTokenMinted = async (tokenId) =>{
+   
+    try{
+        const provider = await getProviderOrSigner()
+        const nftContract = new Contract(
+               NFT_CONTRACT_ADDRESS,
+               abi_nftCollection,
+               provider)
+        const _isMinted= await nftContract.tokenIsMinted(tokenId)
+        if(_isMinted){
+            return true
+        }else{
+            return false
+        }
+    }catch(err){
+       console.error(err)
+    }
+
+}
+
 function NFTContainer({presale}){
 
     const buyBkNFT = async(tokenId,price) =>{
@@ -77,7 +97,7 @@ function NFTContainer({presale}){
             
               const tx= await nftContract.publicMint(parseInt(price),parseInt(tokenId),{value:utils.parseEther(price.toString())})
               await tx.wait()
-              kingList[tokenId].bought=true
+              kingList[tokenId-1].bought=true
               window.alert("You succesfully minted a BK NFT")
             }
         }
@@ -89,7 +109,7 @@ function NFTContainer({presale}){
     return(
         <Wrapper>
            {kingList.map((bkNFT)=>(
-                !bkNFT.bought && (
+                !isTokenMinted(id) && (
                      <Item key={bkNFT.id}>    
                        <Cover src={bkNFT.cover}/>
                        <NameContainer>ROI {bkNFT.name} </NameContainer>
