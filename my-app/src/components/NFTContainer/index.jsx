@@ -109,7 +109,7 @@ function NFTContainer({presale}){
     return(
         <Wrapper>
            {kingList.map((bkNFT)=>(
-                !isTokenMinted(id) && (
+                !isTokenMinted(bKNFT.id) && (
                      <Item key={bkNFT.id}>    
                        <Cover src={bkNFT.cover}/>
                        <NameContainer>ROI {bkNFT.name} </NameContainer>
