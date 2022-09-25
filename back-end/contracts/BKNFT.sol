@@ -28,7 +28,7 @@ contract BkNFT is ERC721,Ownable{
     }
 
     function startPresale() public onlyOwner{    
-        presaleEnded=block.timestamp + 5 minutes;
+        presaleEnded=block.timestamp + 30 minutes;
         presaleStarted=true;
     }
 

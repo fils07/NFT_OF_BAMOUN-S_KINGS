@@ -22,7 +22,7 @@ function NftCollection(){
     const [isOwner,setIsOwner]=useState(false)
     const [loading,setLoading]=useState(false)
     const [addressInWhiteList,setAddressInWhiteList]=useState(false)
-    const [endOfPresale,setEndOfPresale]=useState("")
+    const [endOfPresale,setEndOfPresale]=useState(0)
 
     const getOwner = async ()=>{
         try{
@@ -91,12 +91,22 @@ function NftCollection(){
             const provider=await getProviderOrSigner()
             const nftContract=new Contract(NFT_CONTRACT_ADDRESS,abi_nftCollection,provider)
             const _presaleEnded= await nftContract.presaleEnded();
-            //const _presaleEndedInt=parseInt(_presaleEnded)
-            const _hasEnd= _presaleEnded.lt(Math.floor(Date.now()/1000))
-            const temp= (Date.now()/1000)-_presaleEnded
-            setEndOfPresale(temp)
-            SetPresaleEnded(_hasEnd)
-            //alert(_hasEnd)
+            const _hasEnd= Math.floor(Date.now()/1000)>_presaleEnded
+            const _temp= _presaleEnded - Math.floor(Date.now()/1000)
+            /*alert("heure : " + Math.floor(Date.now()/1000))
+            alert("Presale : " + _presaleEnded)
+            alert("hasEnd : " + _hasEnd)*/
+            if(_temp=>0){
+                setEndOfPresale(_temp)
+            }
+            if(_hasEnd){
+                SetPresaleEnded(true)
+                
+            }else{
+                SetPresaleEnded(false)
+                
+            }
+           
          }catch(err){
              console.error(err)
          }
@@ -127,6 +137,17 @@ function NftCollection(){
         }
     }
 
+    function toHMS(seconds){
+        let output =""
+        const hours = Math.trunc(seconds/3600)
+        output = output + " " + hours + " heures "
+        const minutes = Math.trunc(((seconds/3600)-hours)*60)
+        output = output + " " + minutes + " minutes "
+        const second = Math.trunc(((((seconds/3600)-hours)*60)-minutes)*60)
+        output = output + " " + second + " secondes "
+        return output
+    }
+
     const RenderButton =()=>{
 
        if(!presaleStarted){
@@ -149,7 +170,8 @@ function NftCollection(){
                </div>
                )
            }else{
-               return(<DescriptionDiv>La prévente est encore en cours veuillez encore patienter pour participer à la vente publique 
+               return(<DescriptionDiv>La prévente est encore en cours veuillez encore patienter pour participer à la vente publique
+                <br/> Revenez dans {toHMS(endOfPresale)}
                </DescriptionDiv>)
            }
         }else{
@@ -183,10 +205,13 @@ function NftCollection(){
                     clearInterval(presaleEndedInterval)
                 }
             }
-        },10*1000)
+        },5*1000)
         setInterval(async function(){
             await getNumTokensMinted()
-        },10*1000)
+        },5*1000)
+        setInterval(async function(){
+            await getNumTokensMinted()
+        }, 5 * 1000)
     },[])
 
     return(

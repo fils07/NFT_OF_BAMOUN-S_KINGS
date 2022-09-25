@@ -3,6 +3,7 @@ import styled from "styled-components"
 import {NFT_CONTRACT_ADDRESS,abi_nftCollection, WHITE_LIST_CONTRACT_ADDRESS,abi} from '../../constants'
 import {Contract,utils} from "ethers"
 import {getProviderOrSigner} from '../../utils/context'
+import { useState } from "react"
 
 
 const StyledButton = styled.button`
@@ -50,7 +51,7 @@ const PriceContainer = styled.span`
   text-align:center;
   `
 
-const isTokenMinted = async (tokenId) =>{
+const _isTokenMinted = async (tokenId) =>{
    
     try{
         const provider = await getProviderOrSigner()
@@ -60,9 +61,9 @@ const isTokenMinted = async (tokenId) =>{
                provider)
         const _isMinted= await nftContract.tokenIsMinted(tokenId)
         if(_isMinted){
-            return true
+            return Promise.resolve(true)
         }else{
-            return false
+            return Promise.resolve(false)
         }
     }catch(err){
        console.error(err)
@@ -70,8 +71,9 @@ const isTokenMinted = async (tokenId) =>{
 
 }
 
-function NFTContainer({presale}){
+function NFTContainer ({presale}){
 
+    
     const buyBkNFT = async(tokenId,price) =>{
         try{
         const signer = await getProviderOrSigner(true)
@@ -87,6 +89,7 @@ function NFTContainer({presale}){
                 const tx= await nftContract.presaleMint(parseInt(price),parseInt(tokenId),{value:utils.parseEther(price.toString())})
                 await tx.wait()
                 window.alert("You succesfully minted a BK NFT")
+
             }
         }
         else{
@@ -94,10 +97,8 @@ function NFTContainer({presale}){
             if(_isMinted){
                 window.alert("Token already Minted")
             }else{
-            
               const tx= await nftContract.publicMint(parseInt(price),parseInt(tokenId),{value:utils.parseEther(price.toString())})
               await tx.wait()
-              kingList[tokenId-1].bought=true
               window.alert("You succesfully minted a BK NFT")
             }
         }
@@ -106,19 +107,18 @@ function NFTContainer({presale}){
         }
     }
 
-    return(
+    
+    return  (
         <Wrapper>
-           {kingList.map((bkNFT)=>(
-                !isTokenMinted(bKNFT.id) && (
-                     <Item key={bkNFT.id}>    
-                       <Cover src={bkNFT.cover}/>
-                       <NameContainer>ROI {bkNFT.name} </NameContainer>
-                       <PriceContainer>{bkNFT.price} ether</PriceContainer>
-                       <StyledButton onClick={()=>buyBkNFT(bkNFT.id,bkNFT.price)}>Acheter</StyledButton>
-                   </Item> 
-                )
-                   
-            ))}         
+           {kingList.map((bkNFT)=>
+           (    
+                <Item>
+                    <NameContainer>{bkNFT.name}</NameContainer>
+                    <Cover src={bkNFT.cover}/>
+                    <PriceContainer>{bkNFT.price +  " ethers "}</PriceContainer>
+                    <StyledButton onClick={()=>buyBkNFT(bkNFT.id,bkNFT.price)}>Acheter le NFT</StyledButton>
+                </Item>
+           ))}         
        </Wrapper> 
     )
 }
