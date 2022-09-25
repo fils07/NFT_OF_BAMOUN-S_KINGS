@@ -34,7 +34,7 @@ contract BkNFT is ERC721,Ownable{
 
     function presaleMint(uint256 _price,uint256 _id) public payable{
          uint256 price = (_price) * (1 ether);
-         require(presaleStarted && block.timestamp<presaleEnded,"Presale has'nt start yet");
+         require(presaleStarted,"Presale has'nt start yet");
          require(whitelist.whitelistAddresses(msg.sender),"you have to be in whitelist");
          require(numTokens<maxTokens,"Max Token are minted");
          require(msg.value>=price,"Insufficiant funds");
