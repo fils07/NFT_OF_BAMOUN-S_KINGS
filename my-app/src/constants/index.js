@@ -65,7 +65,7 @@ export const abi= [
     }
 ]
 
-export const NFT_CONTRACT_ADDRESS= "0xa3B75e424019E6FBd561DBbf5236A511db065273"
+export const NFT_CONTRACT_ADDRESS= "0x4601B3317C827314D6CA94b92fA298D27CB39496"
 
 export const abi_nftCollection =  [
     {
